@@ -29,24 +29,13 @@ namespace TestingManager.Areas.Usuario.Controllers
         [AllowAnonymous]
         public string login(string login_name, string password)
         {
-            //Request.
-
-            //Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-            //Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            //Response.AddHeader("Access-Control-Max-Age", "1728000");
-            //Response.AppendHeader("Access-Control-Allow-Origin", "*");
-            //Response.ContentType = "application/json";
-            //Response.AddHeader("Content-Type", "application/json");
-
-            //dynamic objPersona = new System.Dynamic.ExpandoObject();
-            //objPersona.login_name = Request.Headers["login_name"];
-            //objPersona.password = Request.Headers["password"];
-
             Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
 
             if(user != null)
             { 
                 UsuarioWeb usuarioResult = MapearUsuarioWeb(user);
+
+                usuarioResult.tokenSession = "asdqwe";
 
                 return JsonConvert.SerializeObject(usuarioResult);
             }

@@ -9,6 +9,5 @@ D:\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Datos.dll
 D:\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Datos.pdb
 D:\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Entidades.dll
 D:\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Entidades.pdb
-D:\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.csprojResolveAssemblyReference.cache
 D:\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.dll
 D:\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.pdb

@@ -27,17 +27,18 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         }
 
         [AllowAnonymous]
-        public string getByIdUser(int id_usuario)
+        public JsonResult getByIdUser(int id_usuario)
         {
             Proyecto proyecto = serviceProyecto.getByIdUser(id_usuario);
 
             if(proyecto != null)
             {
-                return JsonConvert.SerializeObject(proyecto);
+                //return JsonConvert.SerializeObject(proyecto);
+                return Json(proyecto, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                return "";
+                return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
             }
 
             

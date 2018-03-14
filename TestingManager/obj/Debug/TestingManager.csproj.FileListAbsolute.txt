@@ -82,3 +82,12 @@ D:\Chelo\Proyectos\TestingManager\TestingManager\bin\zh-Hans\System.Spatial.reso
 D:\Chelo\Proyectos\TestingManager\TestingManager\bin\zh-Hant\System.Spatial.resources.dll
 D:\Chelo\Proyectos\TestingManager\TestingManager\obj\Debug\TestingManager.dll
 D:\Chelo\Proyectos\TestingManager\TestingManager\obj\Debug\TestingManager.pdb
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Web.Http.WebHost.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Web.Http.WebHost.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\es\System.Web.Http.WebHost.resources.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Web.Http.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Web.Http.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\es\System.Web.Http.resources.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Net.Http.Formatting.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Net.Http.Formatting.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\es\System.Net.Http.Formatting.resources.dll

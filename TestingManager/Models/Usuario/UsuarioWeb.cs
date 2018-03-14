@@ -12,5 +12,6 @@ namespace TestingManager.Models
         public string email { get; set; }
         public string token_clave { get; set; }
         public bool habilitado { get; set; }
+        public string tokenSession { get; set; }
     }
 }

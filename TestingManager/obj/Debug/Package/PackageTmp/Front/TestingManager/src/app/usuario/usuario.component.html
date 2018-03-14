@@ -1,0 +1,9 @@
+<h1>Usuario</h1>
+
+<!--{{usuario.id_usuario}}-->
+<div *ngIf="usuario">
+	{{usuario.login_name}}	- {{usuario.email}}
+</div>
+<div *ngIf="!usuario">
+	Cargando...
+</div>
