@@ -186,3 +186,7 @@ C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\TestingMan
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\TestingManager\obj\Debug\TestingManager.pdb
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\TestingManager\bin\System.Net.Http.xml
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\TestingManager\bin\System.Net.Http.WebRequest.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Net.Http.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\System.Net.Http.WebRequest.xml
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\es\System.Net.Http.resources.dll
+D:\Chelo\Proyectos\TestingManager\TestingManager\bin\es\System.Net.Http.WebRequest.resources.dll

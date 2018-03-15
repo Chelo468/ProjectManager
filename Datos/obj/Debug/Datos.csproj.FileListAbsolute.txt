@@ -18,3 +18,4 @@ C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\bin\
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\Debug\Datos.csprojResolveAssemblyReference.cache
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\Debug\Datos.dll
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\Debug\Datos.pdb
+D:\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.csprojResolveAssemblyReference.cache
