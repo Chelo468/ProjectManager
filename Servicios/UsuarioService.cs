@@ -19,9 +19,18 @@ namespace Servicios
 
         public Usuario getByUserNamePassword(string login_name, string password)
         {
-            Usuario usuario = UsuarioDataProvider.getByUserNamePassword(login_name, password);
+            try
+            {
 
-            return usuario;
+                Usuario usuario = UsuarioDataProvider.getByUserNamePassword(login_name, password);
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.Message, "Servicios", "UsuarioService", "getByUserNamePassword");
+                return null;
+            }
         }
     }
 }

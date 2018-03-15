@@ -7,3 +7,7 @@ D:\Chelo\Proyectos\TestingManager\Entidades\bin\Debug\Entidades.pdb
 D:\Chelo\Proyectos\TestingManager\Entidades\obj\Debug\Entidades.dll
 D:\Chelo\Proyectos\TestingManager\Entidades\obj\Debug\Entidades.pdb
 D:\Chelo\Proyectos\TestingManager\Entidades\obj\Debug\Entidades.csprojResolveAssemblyReference.cache
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Entidades\bin\Debug\Entidades.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Entidades\bin\Debug\Entidades.pdb
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Entidades\obj\Debug\Entidades.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Entidades\obj\Debug\Entidades.pdb

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Datos</RootNamespace>
     <AssemblyName>Datos</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +48,7 @@
     <Compile Include="Soporte\Conexion.cs" />
     <Compile Include="Soporte\ConfiguracionDataProvider.cs" />
     <Compile Include="Soporte\GenericDataProvider.cs" />
+    <Compile Include="Soporte\LogueadorService.cs" />
     <Compile Include="UsuarioDataProvider.cs" />
   </ItemGroup>
   <ItemGroup>

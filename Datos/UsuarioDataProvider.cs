@@ -28,18 +28,27 @@ namespace Datos
 
         public static Usuario getByUserNamePassword(string login_name, string password)
         {
-            Usuario usuario = new Usuario();
+            try
+            {
+                Usuario usuario = new Usuario();
 
-            SqlParameter[] parametros = new SqlParameter[2];
-            parametros[0] = new SqlParameter("login_name", login_name);
-            parametros[1] = new SqlParameter("password", password);
+                SqlParameter[] parametros = new SqlParameter[2];
+                parametros[0] = new SqlParameter("login_name", login_name);
+                parametros[1] = new SqlParameter("password", password);
 
-            DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetByUserNamePassword", parametros);
+                DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetByUserNamePassword", parametros);
 
-            if (usuarioResult.Rows.Count > 0)
-                usuario = Mapear(usuarioResult.Rows[0]);
+                if (usuarioResult.Rows.Count > 0)
+                    usuario = Mapear(usuarioResult.Rows[0]);
 
-            return usuario;
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.ToString(), "Datos", "UsuarioDataProvider", "getByUserNamePassword");
+                throw ex;
+            }
+            
         }
 
         private static Usuario Mapear(DataRow lector)

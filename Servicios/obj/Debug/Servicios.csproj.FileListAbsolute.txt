@@ -16,3 +16,12 @@ D:\Chelo\Proyectos\TestingManager\Servicios\bin\Debug\Entidades.pdb
 D:\Chelo\Proyectos\TestingManager\Servicios\obj\Debug\Servicios.csprojResolveAssemblyReference.cache
 D:\Chelo\Proyectos\TestingManager\Servicios\obj\Debug\Servicios.dll
 D:\Chelo\Proyectos\TestingManager\Servicios\obj\Debug\Servicios.pdb
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Servicios.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Servicios.pdb
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Datos.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Entidades.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Datos.pdb
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\bin\Debug\Entidades.pdb
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\obj\Debug\Servicios.csprojResolveAssemblyReference.cache
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\obj\Debug\Servicios.dll
+C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Servicios\obj\Debug\Servicios.pdb

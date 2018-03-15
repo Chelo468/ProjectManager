@@ -26,7 +26,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
-                //logService.loguear(ex.ToString(), "CheloComparer.Servicios", "SqlConexionService", "probarConexion");
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "probarConexion");
                 return false;
             }
 
@@ -45,6 +45,7 @@ namespace Datos
             catch (Exception ex)
             {
                 //TODO Loguear la excepcion
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "conectar");
                 return false;
                 //return false;
                 throw ex;
@@ -64,6 +65,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "desconectar");
                 throw ex;
             }
         }
@@ -93,7 +95,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
-
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "executeQuery");
                 throw ex;
             }
             finally
@@ -134,7 +136,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
-
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "executeQueryProc");
                 throw ex;
             }
             finally
@@ -167,7 +169,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
-
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "executeNonQuery");
                 throw ex;
             }
             finally
@@ -202,7 +204,7 @@ namespace Datos
             }
             catch (Exception ex)
             {
-
+                LogueadorService.loguear(ex.ToString(), "Datos", "Conexion", "executeNonQueryProc");
                 throw ex;
             }
             finally

@@ -29,11 +29,22 @@ namespace TestingManager.Areas.Usuario.Controllers
         [AllowAnonymous]
         public string login(string login_name, string password)
         {
+            LogueadorService.loguear("Parametros:" + login_name + "," + password, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
             Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
 
             if(user != null)
-            { 
-                UsuarioWeb usuarioResult = MapearUsuarioWeb(user);
+            {
+                LogueadorService.loguear("user != null: Id: " + user.id_usuario, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
+                UsuarioWeb usuarioResult = new UsuarioWeb();
+                try
+                {
+                    usuarioResult = MapearUsuarioWeb(user);
+                }
+                catch (Exception ex)
+                {
+                    LogueadorService.loguear(ex.Message, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");                   
+                }
+                
 
                 usuarioResult.tokenSession = "asdqwe";
 
