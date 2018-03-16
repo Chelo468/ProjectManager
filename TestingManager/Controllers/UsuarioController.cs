@@ -24,55 +24,55 @@ namespace TestingManager.Controllers
         }
 
         
-        public string Get(int id)
-        {
+        //public string Get(int id)
+        //{
             
-            Usuario user = serviceUsuario.getById(id);
+        //    Usuario user = serviceUsuario.getById(id);
 
-            string output = JsonConvert.SerializeObject(user);
+        //    string output = JsonConvert.SerializeObject(user);
                         
-            return output;
-            //return ActionContext.Request.CreateResponse(HttpStatusCode.OK, output);            
-        }
+        //    return output;
+        //    //return ActionContext.Request.CreateResponse(HttpStatusCode.OK, output);            
+        //}
 
 
-        public string login(string login_name, string password)
-        {
+        //public string login(string login_name, string password)
+        //{
 
 
-            Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
+        //    Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
 
-            UsuarioWeb usuarioResult = MapearUsuarioWeb(user);
+        //    UsuarioWeb usuarioResult = MapearUsuarioWeb(user);
 
-            return JsonConvert.SerializeObject(usuarioResult);
-        }
+        //    return JsonConvert.SerializeObject(usuarioResult);
+        //}
 
-        private UsuarioWeb MapearUsuarioWeb(Usuario user)
-        {
-            UsuarioWeb usuarioResult = new UsuarioWeb();
+        //private UsuarioWeb MapearUsuarioWeb(Usuario user)
+        //{
+        //    UsuarioWeb usuarioResult = new UsuarioWeb();
 
-            usuarioResult.id_usuario = user.id_usuario;
-            usuarioResult.login_name = user.login_name;
-            usuarioResult.email = user.email;
-            usuarioResult.habilitado = user.habilitado;
-            usuarioResult.token_clave = user.token_clave;
+        //    usuarioResult.id_usuario = user.id_usuario;
+        //    usuarioResult.login_name = user.login_name;
+        //    usuarioResult.email = user.email;
+        //    usuarioResult.habilitado = user.habilitado;
+        //    usuarioResult.token_clave = user.token_clave;
 
-            return usuarioResult;
-        }
+        //    return usuarioResult;
+        //}
 
 
-        public JsonResult ObtenerPersona(string nombre, string apellido) 
-        {
-            //Request.
+        //public JsonResult ObtenerPersona(string nombre, string apellido) 
+        //{
+        //    //Request.
 
-            dynamic objPersona = new System.Dynamic.ExpandoObject();
-            objPersona.Nombre = nombre;
-            objPersona.Apellido = apellido;
+        //    dynamic objPersona = new System.Dynamic.ExpandoObject();
+        //    objPersona.Nombre = nombre;
+        //    objPersona.Apellido = apellido;
 
-            //return Json(objPersona, JsonRequestBehavior.AllowGet);
-            return JsonConvert.SerializeObject(objPersona);
+        //    //return Json(objPersona, JsonRequestBehavior.AllowGet);
+        //    return JsonConvert.SerializeObject(objPersona);
 
-        }
+        //}
             
 
     }

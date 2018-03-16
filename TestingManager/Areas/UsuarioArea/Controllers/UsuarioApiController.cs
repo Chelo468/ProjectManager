@@ -7,10 +7,11 @@ using Entidades;
 using TestingManager.Models;
 using Servicios;
 using Newtonsoft.Json;
+using TestingManager.Controllers;
 
 namespace TestingManager.Areas.Usuario.Controllers
 {
-    public class UsuarioApiController : Controller
+    public class UsuarioApiController : GenericController
     {
         //
         // GET: /Usuario/UsuarioApi/
@@ -27,12 +28,12 @@ namespace TestingManager.Areas.Usuario.Controllers
         }
 
         [AllowAnonymous]
-        public string login(string login_name, string password)
+        public JsonResult login(string login_name, string password)
         {
             LogueadorService.loguear("Parametros:" + login_name + "," + password, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
             Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
 
-            if(user != null)
+            if (user != null)
             {
                 LogueadorService.loguear("user != null: Id: " + user.id_usuario, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
                 UsuarioWeb usuarioResult = new UsuarioWeb();
@@ -42,19 +43,22 @@ namespace TestingManager.Areas.Usuario.Controllers
                 }
                 catch (Exception ex)
                 {
-                    LogueadorService.loguear(ex.Message, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");                   
+                    LogueadorService.loguear(ex.Message, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
                 }
                 
+                string token = crearSesion(usuarioResult.id_usuario);
+                
+                usuarioResult.tokenSession = token;
 
-                usuarioResult.tokenSession = "asdqwe";
-
-                return JsonConvert.SerializeObject(usuarioResult);
+                //return JsonConvert.SerializeObject(usuarioResult);
+                return Json(usuarioResult, JsonRequestBehavior.AllowGet);
             }
 
-            return JsonConvert.SerializeObject(user);
+            return Json(new { Error = true, Mensaje = "Usuario y/o contraseña incorrecta." }, JsonRequestBehavior.AllowGet);//JsonConvert.SerializeObject(user);
             //return Json(new { Error = true, Message = "Operación HTTP desconocida o imposible de ejecutar" }, JsonRequestBehavior.AllowGet);
-
+            
         }
+        
 
         private UsuarioWeb MapearUsuarioWeb(Entidades.Usuario user)
         {

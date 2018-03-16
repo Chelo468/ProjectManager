@@ -8,6 +8,14 @@ namespace Entidades
 {
     public class Defecto
     {
+        public Defecto()
+        {
+            usuario_detector = new Usuario();
+            usuario_resolutor = new Usuario();
+            estado = new EstadoDefecto();
+            publicacion = new Publicacion();
+        }
+
         public int id_defecto { get; set; }
         public Usuario usuario_detector { get; set; }
         public Usuario usuario_resolutor { get; set; }

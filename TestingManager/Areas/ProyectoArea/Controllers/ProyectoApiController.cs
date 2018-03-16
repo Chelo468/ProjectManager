@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TestingManager.Controllers;
 
 namespace TestingManager.Areas.ProyectoArea.Controllers
 {
-    public class ProyectoApiController : Controller
+    public class ProyectoApiController : GenericController
     {
         //
         // GET: /ProyectoArea/ProyectoApi/
@@ -27,21 +28,34 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         }
 
         [AllowAnonymous]
-        public JsonResult getByIdUser(int id_usuario)
+        public JsonResult getByIdUser(int id_usuario, string token)
         {
-            Proyecto proyecto = serviceProyecto.getByIdUser(id_usuario);
+            if(token != null && getSesionByToken(token) != null)
+            { 
+                Proyecto proyecto = serviceProyecto.getByIdUser(id_usuario);
 
-            if(proyecto != null)
-            {
-                //return JsonConvert.SerializeObject(proyecto);
-                return Json(proyecto, JsonRequestBehavior.AllowGet);
+                if(proyecto != null)
+                {
+                    //return JsonConvert.SerializeObject(proyecto);
+                    return Json(proyecto, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { Mensaje = "no se encuentran proyectos" }, JsonRequestBehavior.AllowGet);
+                }
             }
             else
             {
-                return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+                return Json(new { Error = true, Mensaje = "token no válido" }, JsonRequestBehavior.AllowGet);
             }
 
-            
+
+        }
+
+        [AllowAnonymous]
+        public JsonResult crear()
+        {
+            return Json(new { Error = false }, JsonRequestBehavior.AllowGet);
         }
 
     }

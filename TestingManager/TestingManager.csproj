@@ -176,6 +176,7 @@
     <Compile Include="Areas\ProyectoArea\ProyectoAreaAreaRegistration.cs" />
     <Compile Include="Areas\UsuarioArea\Controllers\UsuarioApiController.cs" />
     <Compile Include="Areas\UsuarioArea\UsuarioAreaRegistration.cs" />
+    <Compile Include="Controllers\GenericController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
