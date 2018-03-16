@@ -10,11 +10,50 @@ namespace Servicios
 {
     public class ProyectoService
     {
-        public Proyecto getByIdUser(int id_usuario)
+        public List<Proyecto> getByIdUser(int id_usuario)
         {
-            Proyecto usuario = ProyectoDataProvider.getByIdUser(id_usuario);
+            List<Proyecto> proyectos = ProyectoDataProvider.getByIdUser(id_usuario);
 
-            return usuario;
+            return proyectos;
+        }
+
+        public int crear(Proyecto proyecto, ref string respuesta)
+        {
+            try
+            {
+                return ProyectoDataProvider.crear(proyecto);
+            }
+            catch (Exception ex)
+            {
+                respuesta = ex.Message;
+                return -1;
+            }
+            
+        }
+
+        public Proyecto getById(int idProyecto, int idUsuario, ref string error)
+        {
+            try
+            {
+                return ProyectoDataProvider.getById(idProyecto, idUsuario);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return null;
+            }
+        }
+
+        public void actualizar(Proyecto proyecto, ref string resultado)
+        {
+            try
+            {
+                ProyectoDataProvider.actualizar(proyecto);
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
         }
     }
 }

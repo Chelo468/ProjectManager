@@ -8,6 +8,11 @@ namespace Entidades
 {
     public class Proyecto
     {
+        public Proyecto()
+        {
+            usuario_creador = new Usuario();
+        }
+
         public int id_proyecto { get; set; }
         public string nombre { get; set; }
         public DateTime fecha_alta { get; set; }

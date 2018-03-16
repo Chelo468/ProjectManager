@@ -22,15 +22,29 @@ namespace TestingManager.Areas.ProyectoArea
 
             context.MapRoute(
                 "ProyectoApiGetByUser",
-                "api/proyecto/getByIdUser/{id_usuario}/{token}",
-                new { controller = "ProyectoApi", action = "getByIdUser", id_usuario = UrlParameter.Optional, token = UrlParameter.Optional }
+                "api/proyecto/getByIdUser/{token}",
+                new { controller = "ProyectoApi", action = "getByIdUser", token = UrlParameter.Optional }
                 );
 
             context.MapRoute(
                 "ProyectoApiCrear",
-                "api/proyecto/crear",
-                new { controller = "ProyectoApi", action = "crear" }
+                "api/proyecto/crear/",
+                new { controller = "ProyectoApi", action = "crear"}
                 );
+
+            context.MapRoute(
+               "ProyectoApiActualizar",
+               "api/proyecto/actualizar/{idProyecto}",
+               new { controller = "ProyectoApi", action = "actualizar", idProyecto = UrlParameter.Optional }
+               );
+
+            context.MapRoute(
+                "ProyectoApiGetById",
+                "api/proyecto/getById/{idProyecto}",
+                new { controller = "ProyectoApi", action = "getById", idProyecto = UrlParameter.Optional }
+                );
+
+           
         }
     }
 }
