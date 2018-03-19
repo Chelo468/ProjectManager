@@ -12,9 +12,14 @@ namespace Entidades
         public string login_name { get; set; }
         public string password { get; set; }
         public DateTime fecha_alta { get; set; }
+        public DateTime fecha_ultima_modif { get; set; }
+        public DateTime fecha_baja { get; set; }
         public string email { get; set; }
         public string token_clave { get; set; }
         public bool habilitado { get; set; }
+        public string nombre { get; set; }
+        public string apellido { get; set; }
+        public string telefono { get; set; }
         public Rol[] roles { get; set; }
     }
 }

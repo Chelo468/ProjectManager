@@ -17,7 +17,7 @@ namespace Entidades
         public string nombre { get; set; }
         public DateTime fecha_alta { get; set; }
         public DateTime fecha_ultima_modif { get; set; }
-        public DateTime fecha_baja { get; set; }
+        public Nullable<DateTime> fecha_baja { get; set; }
         public Usuario usuario_creador { get; set; }
         public string descripcion { get; set; }
         public string urlTesting { get; set; }

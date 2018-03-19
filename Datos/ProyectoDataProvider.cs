@@ -92,7 +92,7 @@ namespace Datos
             {
                 proyecto.fecha_baja = Convert.ToDateTime(dataRow["fecha_baja"].ToString());
             }
-            catch (Exception){}
+            catch (Exception){ proyecto.fecha_baja = null; }
             
             try
             {

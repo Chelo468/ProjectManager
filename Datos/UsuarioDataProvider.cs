@@ -51,6 +51,36 @@ namespace Datos
             
         }
 
+        public static int crear(Usuario nuevoUsuario)
+        {
+            try
+            {
+                int usuario = 0;
+                SqlParameter[] parametros = new SqlParameter[9];
+                parametros[0] = new SqlParameter("nombre", nuevoUsuario.nombre);
+                parametros[1] = new SqlParameter("apellido", nuevoUsuario.apellido);
+                parametros[2] = new SqlParameter("login_name", nuevoUsuario.login_name);
+                parametros[3] = new SqlParameter("password", nuevoUsuario.password);
+                parametros[4] = new SqlParameter("telefono", nuevoUsuario.telefono);
+                parametros[5] = new SqlParameter("email", nuevoUsuario.email);
+                parametros[6] = new SqlParameter("fecha_alta", nuevoUsuario.fecha_alta);
+                parametros[7] = new SqlParameter("habilitado", nuevoUsuario.habilitado);
+                parametros[8] = new SqlParameter("token_clave", nuevoUsuario.token_clave);
+
+                DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosInsert", parametros);
+
+                if (usuarioResult.Rows.Count > 0)
+                    usuario = Convert.ToInt32(usuarioResult.Rows[0][0].ToString());
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.ToString(), "Datos", "UsuarioDataProvider", "crear");
+                throw ex;
+            }
+        }
+
         private static Usuario Mapear(DataRow lector)
         {
             Usuario usuario = new Usuario();
@@ -62,6 +92,9 @@ namespace Datos
             usuario.fecha_alta = lector["fecha_alta"] != null ? Convert.ToDateTime(lector["fecha_alta"].ToString()) : new DateTime();
             usuario.email = lector["email"] != null ? lector["email"].ToString() : "";
             usuario.habilitado = lector["habilitado"] != null ? Convert.ToBoolean(lector["habilitado"].ToString()) : false;
+            usuario.nombre = lector["nombre"].ToString();
+            usuario.apellido = lector["apellido"].ToString();
+            usuario.telefono = lector["telefono"].ToString();
 
             return usuario;
             

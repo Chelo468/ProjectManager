@@ -18,6 +18,7 @@ namespace Servicios
             }
             catch (Exception ex)
             {
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 respuesta = ex.Message;
                 return null;
             }
@@ -36,7 +37,21 @@ namespace Servicios
             }
             catch (Exception ex)
             {
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 respuesta = ex.Message;
+            }
+        }
+
+        public void delete(Sesion sesionActual)
+        {
+            try
+            {
+                SesionDataProvider.delete(sesionActual);
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw ex;
             }
         }
     }

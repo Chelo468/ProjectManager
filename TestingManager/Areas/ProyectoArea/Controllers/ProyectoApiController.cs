@@ -126,10 +126,13 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
                         {
                             return Json(new { Error = true, Mensaje = "Ocurrió un error al crear el proyecto" }, JsonRequestBehavior.AllowGet);
                         }
+
+                        if (nuevoProyecto.id_proyecto == -1)
+                            return Json(new { Error = true, Mensaje = "No tiene permiso para crear proyectos." }, JsonRequestBehavior.AllowGet);
+                        else
+                            return Json(nuevoProyecto, JsonRequestBehavior.AllowGet);
                         
-
-
-                        return Json(nuevoProyecto, JsonRequestBehavior.AllowGet);
+                            
                     }
                     else
                     {

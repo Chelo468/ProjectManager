@@ -8,6 +8,8 @@ using TestingManager.Models;
 using Servicios;
 using Newtonsoft.Json;
 using TestingManager.Controllers;
+using Entidades.Entidades;
+using System.IO;
 
 namespace TestingManager.Areas.Usuario.Controllers
 {
@@ -22,10 +24,61 @@ namespace TestingManager.Areas.Usuario.Controllers
             serviceUsuario = new UsuarioService();
         }
 
-        public ActionResult Index()
+        [AllowAnonymous]
+        public JsonResult crear()
         {
-            return View();
-        }
+            string resultado = "";
+            try
+            {
+                Request.InputStream.Seek(0, SeekOrigin.Begin);
+                string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                dynamic objUsuario = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                if (!string.IsNullOrEmpty(jsonData))
+                {
+                    
+                    Entidades.Usuario nuevoUsuario = new Entidades.Usuario();
+                    try
+                    {
+                        nuevoUsuario.nombre = objUsuario.nombre;
+                        nuevoUsuario.apellido = objUsuario.apellido;
+                        nuevoUsuario.email = objUsuario.email;
+                        nuevoUsuario.login_name = objUsuario.login_name;
+                        nuevoUsuario.password = objUsuario.password;
+                        nuevoUsuario.fecha_alta = DateTime.Now;
+                        nuevoUsuario.habilitado = false;
+                        nuevoUsuario.telefono = objUsuario.telefono;
+
+                        //TODO: Generar random de token para habilitar usuario
+                        nuevoUsuario.token_clave = "asdqwe";
+                    }
+                    catch (Exception)
+                    {
+                        resultado = "Faltan datos";
+                    }
+                                     
+                    if(string.IsNullOrEmpty(resultado))
+                    { 
+                        try
+                        {
+                            nuevoUsuario.id_usuario = serviceUsuario.crear(nuevoUsuario, ref resultado);
+                            return Json(nuevoUsuario, JsonRequestBehavior.AllowGet);
+                        }
+                        catch (Exception)
+                        {
+                            resultado = "Ocurrió un error al crear el proyecto";// }, JsonRequestBehavior.AllowGet);
+                        }
+                        
+                    }                    
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+         }
 
         [AllowAnonymous]
         public JsonResult login(string login_name, string password)
@@ -58,7 +111,34 @@ namespace TestingManager.Areas.Usuario.Controllers
             //return Json(new { Error = true, Message = "Operación HTTP desconocida o imposible de ejecutar" }, JsonRequestBehavior.AllowGet);
             
         }
-        
+
+        [AllowAnonymous]
+        public JsonResult logout()
+        {
+            string resultado = "";
+            try
+            {
+                string token = Request.Headers["X-AUTH-TOKEN"];
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    SesionService sesionService = new SesionService();
+
+                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                    if(sesionActual != null)
+                        sesionService.delete(sesionActual);
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+        }
+
+
 
         private UsuarioWeb MapearUsuarioWeb(Entidades.Usuario user)
         {

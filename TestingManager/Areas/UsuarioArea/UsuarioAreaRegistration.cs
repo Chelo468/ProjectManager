@@ -25,6 +25,18 @@ namespace TestingManager.Areas.Usuario
                 "api/usuario/login/{login_name}/{password}",
                 new { controller = "UsuarioApi", action = "login", login_name = UrlParameter.Optional, password = UrlParameter.Optional }
                 );
+
+            context.MapRoute(
+                "UsuarioApiCrear",
+                "api/usuario/crear/",
+                new { controller = "UsuarioApi", action = "crear" }
+                );
+
+            context.MapRoute(
+                "UsuarioApiLogOut",
+                "api/usuario/logout/",
+                new { controller = "UsuarioApi", action = "logout" }
+                );
         }
     }
 }

@@ -3,6 +3,7 @@ using Servicios;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -37,7 +38,7 @@ namespace TestingManager.Controllers
 
             sesion.usuario_logueado.id_usuario = id_usuario;
             //TODO: Generar Random
-            sesion.token = "asdqwe";
+            sesion.token = generarTokenAleatorio();
             sesion.fecha_inicio = DateTime.Now;
 
             SesionService serviceSesion = new SesionService();
@@ -50,5 +51,20 @@ namespace TestingManager.Controllers
 
         }
 
+        private string generarTokenAleatorio()
+        {
+            int longitud = 7;
+            const string alfabeto = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            StringBuilder token = new StringBuilder();
+            Random rnd = new Random();
+
+            for (int i = 0; i < longitud; i++)
+            {
+                int indice = rnd.Next(alfabeto.Length);
+                token.Append(alfabeto[indice]);
+            }
+
+            return token.ToString();
+        }
     }
 }

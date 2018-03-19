@@ -28,8 +28,21 @@ namespace Servicios
             }
             catch (Exception ex)
             {
-                LogueadorService.loguear(ex.Message, "Servicios", "UsuarioService", "getByUserNamePassword");
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 return null;
+            }
+        }
+
+        public int crear(Usuario nuevoUsuario, ref string respuesta)
+        {
+            try
+            {
+                return UsuarioDataProvider.crear(nuevoUsuario);
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return 0;                
             }
         }
     }

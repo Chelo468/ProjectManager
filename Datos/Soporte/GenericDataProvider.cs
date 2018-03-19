@@ -12,12 +12,30 @@ namespace Datos
     {
         public static DataTable executeQueryProc(string cadenaConexion, string storedProcedure, SqlParameter[] parametros)
         {
-            return Conexion.executeQueryProc(cadenaConexion, storedProcedure, parametros);
+            try
+            {
+                return Conexion.executeQueryProc(cadenaConexion, storedProcedure, parametros);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
         }
 
         public static void executeNonQueryProc(string cadenaConexion, string storedProcedure, SqlParameter[] parametros)
         {
-            Conexion.executeNonQueryProc(cadenaConexion, storedProcedure, parametros);
+            try
+            {
+                Conexion.executeNonQueryProc(cadenaConexion, storedProcedure, parametros);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            
         }
     }
 }
