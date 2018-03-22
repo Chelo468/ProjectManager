@@ -11,6 +11,23 @@ namespace Datos
 {
     public class UsuarioDataProvider : GenericDataProvider
     {
+        public static List<Usuario> getAll()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            
+            DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetAll", null);
+
+            for (int i = 0; i < usuarioResult.Rows.Count; i++)
+            {
+                Usuario user = new Usuario();
+                user = Mapear(usuarioResult.Rows[i]);
+
+                usuarios.Add(user);
+            }
+
+            return usuarios;
+        }
+
         public static Usuario getById(int id)
         {
             Usuario usuario = new Usuario();
@@ -73,6 +90,35 @@ namespace Datos
                     usuario = Convert.ToInt32(usuarioResult.Rows[0][0].ToString());
 
                 return usuario;
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.ToString(), "Datos", "UsuarioDataProvider", "crear");
+                throw ex;
+            }
+        }
+
+        public static void updateRoles(Usuario user)
+        {
+            try
+            {
+                int usuario = 0;
+
+                SqlParameter[] parametrosDelete = new SqlParameter[1];
+
+                parametrosDelete[0] = new SqlParameter("id_usuario", user.id_usuario);
+
+                executeNonQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "rolesUsuarioDelete", parametrosDelete);
+
+                SqlParameter[] parametrosInsert = new SqlParameter[2];
+                for (int i = 0; i < user.roles.Count; i++)
+                {
+                    parametrosInsert[0] = new SqlParameter("id_usuario", user.id_usuario);
+                    parametrosInsert[1] = new SqlParameter("id_rol", user.roles[i].id_rol);
+
+                    executeNonQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "rolesUsuarioInsert", parametrosInsert);
+                }
+
             }
             catch (Exception ex)
             {

@@ -20,6 +20,6 @@ namespace Entidades
         public string nombre { get; set; }
         public string apellido { get; set; }
         public string telefono { get; set; }
-        public Rol[] roles { get; set; }
+        public List<Rol> roles { get; set; }
     }
 }

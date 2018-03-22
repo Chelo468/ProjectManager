@@ -21,7 +21,25 @@ namespace TestingManager.Areas.Usuario
             );
 
             context.MapRoute(
-                "UsuarioApi",
+                "UsuarioApiGetUsers",
+                "api/usuario/getUsers",
+                new { controller = "UsuarioApi", action = "getUsers" }
+                ); 
+            
+            context.MapRoute(
+                "UsuarioApiUpdateRoles",
+                "api/usuario/updateRoles",
+                new { controller = "UsuarioApi", action = "updateRoles" }
+                );
+
+            context.MapRoute(
+                "UsuarioApigetUserById",
+                "api/usuario/getUserById/{id_usuario}",
+                new { controller = "UsuarioApi", action = "getUserById", id_usuario = UrlParameter.Optional }
+                );
+
+            context.MapRoute(
+                "UsuarioApiLogin",
                 "api/usuario/login/{login_name}/{password}",
                 new { controller = "UsuarioApi", action = "login", login_name = UrlParameter.Optional, password = UrlParameter.Optional }
                 );

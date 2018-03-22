@@ -147,7 +147,7 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
             catch (Exception ex)
             {
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                return Json(new { Error = true }, JsonRequestBehavior.AllowGet);
+                return Json(new { Error = true, Mensaje = ex.Message }, JsonRequestBehavior.AllowGet);
             }
            
         }
@@ -198,6 +198,57 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult eliminar()
+        {
+            string token = Request.Headers["X-AUTH-TOKEN"];
+            string resultado = "";
+            if (token != null)
+            {
+                Sesion sesionActual = getSesionByToken(token);
+
+                if (sesionActual != null)
+                {
+                    string error = "";
+
+                    Proyecto proyectoAux = new Proyecto();
+
+                    Request.InputStream.Seek(0, SeekOrigin.Begin);
+                    string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                    dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                    proyectoAux.id_proyecto = objProyecto.id_proyecto;
+
+                    Proyecto proyecto = serviceProyecto.getById(proyectoAux.id_proyecto, sesionActual.usuario_logueado.id_usuario, ref error);
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    if (proyecto.id_proyecto > 0)
+                    {
+                        proyecto.fecha_baja = DateTime.Now;
+
+                        serviceProyecto.eliminar(proyecto, ref resultado);
+
+                        return Json(proyecto, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { Error = true, Mensaje = "El proyecto no existe o no tiene permiso a él." }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    return Json(new { Error = true, Mensaje = "Token no válido." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(new { Error = true, Mensaje = "Token ausente." }, JsonRequestBehavior.AllowGet);
+            }
         }
 
     }

@@ -34,7 +34,8 @@ namespace Datos
                 return idProyecto;
             }
             catch (Exception ex)
-            {                
+            {
+                LogueadorService.loguear(ex.Message, "Datos", "ProyectoDataProvider", "crear");
                 throw ex;
             }
             
@@ -125,6 +126,23 @@ namespace Datos
 
 
             return proyecto;
+        }
+
+        public static void eliminar(Proyecto proyecto)
+        {
+            try
+            {
+                SqlParameter[] parametros = new SqlParameter[2];
+                parametros[0] = new SqlParameter("id_proyecto", proyecto.id_proyecto);
+                parametros[1] = new SqlParameter("fecha_baja", proyecto.fecha_baja);
+
+                executeNonQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "proyectosDelete", parametros);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
         }
     }
 }

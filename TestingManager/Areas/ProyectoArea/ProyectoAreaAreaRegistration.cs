@@ -39,6 +39,12 @@ namespace TestingManager.Areas.ProyectoArea
                );
 
             context.MapRoute(
+                "ProyectoApiEliminar",
+                "api/proyecto/eliminar/",
+                new { controller = "ProyectoApi", action = "eliminar" }
+                );
+
+            context.MapRoute(
                 "ProyectoApiGetById",
                 "api/proyecto/getById/{idProyecto}",
                 new { controller = "ProyectoApi", action = "getById", idProyecto = UrlParameter.Optional }

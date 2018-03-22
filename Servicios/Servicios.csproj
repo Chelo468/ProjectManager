@@ -46,6 +46,7 @@
     <Compile Include="LogueadorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProyectoService.cs" />
+    <Compile Include="RolService.cs" />
     <Compile Include="SesionService.cs" />
     <Compile Include="UsuarioService.cs" />
   </ItemGroup>

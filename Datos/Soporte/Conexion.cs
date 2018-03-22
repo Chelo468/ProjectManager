@@ -121,11 +121,13 @@ namespace Datos
                     comando.Connection = conexion;
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.CommandText = storedProcedure;
-                    for (int i = 0; i < parametros.Length; i++)
-                    {
-                        comando.Parameters.Add(parametros[i]);
+                    if(parametros != null)
+                    { 
+                        for (int i = 0; i < parametros.Length; i++)
+                        {
+                            comando.Parameters.Add(parametros[i]);
+                        }
                     }
-
                     result.Load(comando.ExecuteReader());
 
                     desconectar();
@@ -192,11 +194,14 @@ namespace Datos
                     comando.Connection = conexion;
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.CommandText = storedProcedure;
-                    for (int i = 0; i < parametros.Length; i++)
-                    {
-                        comando.Parameters.Add(parametros[i]);
-                    }
 
+                    if(parametros != null)
+                    { 
+                        for (int i = 0; i < parametros.Length; i++)
+                        {
+                            comando.Parameters.Add(parametros[i]);
+                        }
+                    }
                     result.Load(comando.ExecuteReader());
 
                     desconectar();

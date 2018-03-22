@@ -10,11 +10,22 @@ namespace Servicios
 {
     public class UsuarioService
     {
-        public Usuario getById(int idUsuario)
+        public Usuario getById(int idUsuario, ref string resultado)
         {
-            Usuario usuario = UsuarioDataProvider.getById(idUsuario);
+            try
+            {
+                Usuario usuario = UsuarioDataProvider.getById(idUsuario);
 
-            return usuario;
+                usuario.roles = RolDataProvider.getByIdUsuario(idUsuario);
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+                return new Usuario();
+            }
+            
         }
 
         public Usuario getByUserNamePassword(string login_name, string password)
@@ -23,6 +34,11 @@ namespace Servicios
             {
 
                 Usuario usuario = UsuarioDataProvider.getByUserNamePassword(login_name, password);
+
+                if(usuario.id_usuario > 0)
+                {
+                    usuario.roles = RolDataProvider.getByIdUsuario(usuario.id_usuario);
+                }
 
                 return usuario;
             }
@@ -43,6 +59,32 @@ namespace Servicios
             {
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 return 0;                
+            }
+        }
+
+        public List<Usuario> getAll(ref string resultado)
+        {
+            try
+            {
+                return UsuarioDataProvider.getAll();
+            }
+            catch (Exception ex)
+            {
+                
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return new List<Usuario>();  
+            }
+        }
+
+        public void updateRoles(Usuario user, ref string resultado)
+        {
+            try
+            {
+                UsuarioDataProvider.updateRoles(user);
+            }
+            catch (Exception ex)
+            {
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
             }
         }
     }

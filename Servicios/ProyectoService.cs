@@ -55,5 +55,17 @@ namespace Servicios
                 resultado = ex.Message;
             }
         }
+
+        public void eliminar(Proyecto proyecto, ref string resultado)
+        {
+            try
+            {
+                ProyectoDataProvider.eliminar(proyecto);
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+        }
     }
 }
