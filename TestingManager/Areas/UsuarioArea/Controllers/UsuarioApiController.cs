@@ -30,158 +30,170 @@ namespace TestingManager.Areas.Usuario.Controllers
         public JsonResult crear()
         {
             string resultado = "";
-            try
+            if (Request.HttpMethod == "POST")
             {
-                Request.InputStream.Seek(0, SeekOrigin.Begin);
-                string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                dynamic objUsuario = JsonConvert.DeserializeObject(jsonData, typeof(object));
-
-                if (!string.IsNullOrEmpty(jsonData))
+                try
                 {
-                    
-                    Entidades.Usuario nuevoUsuario = new Entidades.Usuario();
-                    try
-                    {
-                        nuevoUsuario.nombre = objUsuario.nombre;
-                        nuevoUsuario.apellido = objUsuario.apellido;
-                        nuevoUsuario.email = objUsuario.email;
-                        nuevoUsuario.login_name = objUsuario.login_name;
-                        nuevoUsuario.password = objUsuario.password;
-                        nuevoUsuario.fecha_alta = DateTime.Now;
-                        nuevoUsuario.habilitado = false;
-                        nuevoUsuario.telefono = objUsuario.telefono;
+                    Request.InputStream.Seek(0, SeekOrigin.Begin);
+                    string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                    dynamic objUsuario = JsonConvert.DeserializeObject(jsonData, typeof(object));
 
-                        //TODO: Generar random de token para habilitar usuario
-                        nuevoUsuario.token_clave = "asdqwe";
-                    }
-                    catch (Exception)
+                    if (!string.IsNullOrEmpty(jsonData))
                     {
-                        resultado = "Faltan datos";
-                    }
-                                     
-                    if(string.IsNullOrEmpty(resultado))
-                    { 
+
+                        Entidades.Usuario nuevoUsuario = new Entidades.Usuario();
                         try
                         {
-                            nuevoUsuario.id_usuario = serviceUsuario.crear(nuevoUsuario, ref resultado);
-                            return Json(nuevoUsuario, JsonRequestBehavior.AllowGet);
+                            nuevoUsuario.nombre = objUsuario.nombre;
+                            nuevoUsuario.apellido = objUsuario.apellido;
+                            nuevoUsuario.email = objUsuario.email;
+                            nuevoUsuario.login_name = objUsuario.login_name;
+                            nuevoUsuario.password = objUsuario.password;
+                            nuevoUsuario.fecha_alta = DateTime.Now;
+                            nuevoUsuario.habilitado = false;
+                            nuevoUsuario.telefono = objUsuario.telefono;
+
+                            //TODO: Generar random de token para habilitar usuario
+                            nuevoUsuario.token_clave = "asdqwe";
                         }
                         catch (Exception)
                         {
-                            resultado = "Ocurrió un error al crear el proyecto";// }, JsonRequestBehavior.AllowGet);
+                            resultado = "Faltan datos";
                         }
-                        
-                    }                    
+
+                        if (string.IsNullOrEmpty(resultado))
+                        {
+                            try
+                            {
+                                nuevoUsuario.id_usuario = serviceUsuario.crear(nuevoUsuario, ref resultado);
+                                return Json(nuevoUsuario, JsonRequestBehavior.AllowGet);
+                            }
+                            catch (Exception)
+                            {
+                                resultado = "Ocurrió un error al crear el proyecto";// }, JsonRequestBehavior.AllowGet);
+                            }
+
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado = ex.Message;
                 }
             }
-            catch (Exception ex)
-            {
-                resultado = ex.Message;
-            }
-
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
          }
 
         [AllowAnonymous]
         public JsonResult login(string login_name, string password)
         {
-            LogueadorService.loguear("Parametros:" + login_name + "," + password, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
-            Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
-
-            if (user != null)
+            string resultado = "";
+            if (Request.HttpMethod == "GET")
             {
-                LogueadorService.loguear("user != null: Id: " + user.id_usuario, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
-                UsuarioWeb usuarioResult = new UsuarioWeb();
-                try
-                {
-                    usuarioResult = MapearUsuarioWeb(user);
-                }
-                catch (Exception ex)
-                {
-                    LogueadorService.loguear(ex.Message, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
-                }
-                
-                string token = crearSesion(usuarioResult.id_usuario);
-                
-                usuarioResult.tokenSession = token;
+                //LogueadorService.loguear("Parametros:" + login_name + "," + password, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
+                Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
 
-                //return JsonConvert.SerializeObject(usuarioResult);
-                return Json(usuarioResult, JsonRequestBehavior.AllowGet);
+                if (user != null)
+                {
+                    //LogueadorService.loguear("user != null: Id: " + user.id_usuario, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
+                    UsuarioWeb usuarioResult = new UsuarioWeb();
+                    try
+                    {
+                        usuarioResult = MapearUsuarioWeb(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogueadorService.loguear(ex.Message, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
+                        resultado = ex.Message;
+                    }
+
+                    string token = crearSesion(usuarioResult.id_usuario);
+
+                    usuarioResult.tokenSession = token;
+
+                    //return JsonConvert.SerializeObject(usuarioResult);
+                    return Json(usuarioResult, JsonRequestBehavior.AllowGet);
+                }
+
+                resultado = "Usuario y/o contraseña incorrecta.";
+                //return Json(new { Error = true, Message = "Operación HTTP desconocida o imposible de ejecutar" }, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(new { Error = true, Mensaje = "Usuario y/o contraseña incorrecta." }, JsonRequestBehavior.AllowGet);//JsonConvert.SerializeObject(user);
-            //return Json(new { Error = true, Message = "Operación HTTP desconocida o imposible de ejecutar" }, JsonRequestBehavior.AllowGet);
-            
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);//JsonConvert.SerializeObject(user);
         }
 
         [AllowAnonymous]
         public JsonResult updateRoles()
         {
             string resultado = "";
-            try
+
+            if (Request.HttpMethod == "POST")
             {
-                string token = Request.Headers["X-AUTH-TOKEN"];
-
-                if (!string.IsNullOrEmpty(token))
+                try
                 {
-                    SesionService sesionService = new SesionService();
+                    string token = Request.Headers["X-AUTH-TOKEN"];
 
-                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
-
-                    if (sesionActual != null)
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        List<Rol> rolesUsuario = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+                        SesionService sesionService = new SesionService();
 
-                        foreach (var rol in rolesUsuario)
+                        Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                        if (sesionActual != null)
                         {
-                            if(rol.id_rol == 1)
+                            List<Rol> rolesUsuario = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+
+                            foreach (var rol in rolesUsuario)
                             {
-                                Request.InputStream.Seek(0, SeekOrigin.Begin);
-                                string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                                dynamic objUsuario = JsonConvert.DeserializeObject(jsonData, typeof(object));
-
-                                int idUserActualizable = objUsuario.roles.idUser;
-
-                                Entidades.Usuario user = serviceUsuario.getById(idUserActualizable, ref resultado);
-                                if(user.id_usuario > 0)
+                                if (rol.id_rol == 1)
                                 {
-                                    List<Rol> rolesAAsignar = new List<Rol>();
-                                    bool administrador = objUsuario.roles.administrador;
-                                    bool creador = objUsuario.roles.creador;
-                                    bool analista = objUsuario.roles.analista;
-                                    bool desarrollador = objUsuario.roles.desarrollador;
-                                    bool evaluador = objUsuario.roles.evaluador;
-                                    bool implementador = objUsuario.roles.implementador;
+                                    Request.InputStream.Seek(0, SeekOrigin.Begin);
+                                    string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                                    dynamic objUsuario = JsonConvert.DeserializeObject(jsonData, typeof(object));
 
-                                    if (administrador)
-                                        rolesAAsignar.Add(new Rol { id_rol = 1});
-                                    if (creador)
-                                        rolesAAsignar.Add(new Rol { id_rol = 2 });
-                                    if (analista)
-                                        rolesAAsignar.Add(new Rol { id_rol = 3 });
-                                    if (desarrollador)
-                                        rolesAAsignar.Add(new Rol { id_rol = 4 });
-                                    if (evaluador)
-                                        rolesAAsignar.Add(new Rol { id_rol = 5 });
-                                    if (implementador)
-                                        rolesAAsignar.Add(new Rol { id_rol = 6 });
+                                    int idUserActualizable = objUsuario.roles.idUser;
 
-                                    user.roles = new List<Rol>();
+                                    Entidades.Usuario user = serviceUsuario.getById(idUserActualizable, ref resultado);
+                                    if (user.id_usuario > 0)
+                                    {
+                                        List<Rol> rolesAAsignar = new List<Rol>();
+                                        bool administrador = objUsuario.roles.administrador;
+                                        bool creador = objUsuario.roles.creador;
+                                        bool analista = objUsuario.roles.analista;
+                                        bool desarrollador = objUsuario.roles.desarrollador;
+                                        bool evaluador = objUsuario.roles.evaluador;
+                                        bool implementador = objUsuario.roles.implementador;
 
-                                    user.roles.AddRange(rolesAAsignar);
+                                        if (administrador)
+                                            rolesAAsignar.Add(new Rol { id_rol = 1 });
+                                        if (creador)
+                                            rolesAAsignar.Add(new Rol { id_rol = 2 });
+                                        if (analista)
+                                            rolesAAsignar.Add(new Rol { id_rol = 3 });
+                                        if (desarrollador)
+                                            rolesAAsignar.Add(new Rol { id_rol = 4 });
+                                        if (evaluador)
+                                            rolesAAsignar.Add(new Rol { id_rol = 5 });
+                                        if (implementador)
+                                            rolesAAsignar.Add(new Rol { id_rol = 6 });
 
-                                    serviceUsuario.updateRoles(user, ref resultado);
+                                        user.roles = new List<Rol>();
+
+                                        user.roles.AddRange(rolesAAsignar);
+
+                                        serviceUsuario.updateRoles(user, ref resultado);
+                                    }
+
                                 }
-
                             }
+
                         }
-                        
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                resultado = ex.Message;
+                catch (Exception ex)
+                {
+                    resultado = ex.Message;
+                }
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
@@ -201,23 +213,26 @@ namespace TestingManager.Areas.Usuario.Controllers
         public JsonResult logout()
         {
             string resultado = "";
-            try
+            if (Request.HttpMethod == "POST")
             {
-                string token = Request.Headers["X-AUTH-TOKEN"];
-
-                if (!string.IsNullOrEmpty(token))
+                try
                 {
-                    SesionService sesionService = new SesionService();
+                    string token = Request.Headers["X-AUTH-TOKEN"];
 
-                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        SesionService sesionService = new SesionService();
 
-                    if(sesionActual != null)
-                        sesionService.delete(sesionActual);
+                        Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                        if (sesionActual != null)
+                            sesionService.delete(sesionActual);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                resultado = ex.Message;
+                catch (Exception ex)
+                {
+                    resultado = ex.Message;
+                }
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
@@ -226,40 +241,43 @@ namespace TestingManager.Areas.Usuario.Controllers
         public JsonResult getUserById(int id_usuario)
         {
             string resultado = "";
-            try
+            if (Request.HttpMethod == "GET")
             {
-                string token = Request.Headers["X-AUTH-TOKEN"];
-
-                if (!string.IsNullOrEmpty(token))
+                try
                 {
-                    SesionService sesionService = new SesionService();
+                    string token = Request.Headers["X-AUTH-TOKEN"];
 
-                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
-
-                    List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
-
-                    if (roles.Count > 0)
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        foreach (var rol in roles)
-                        {
-                            if (rol.id_rol == 1)
-                            {
-                                //Si tiene el rol 1 quiere decir que es administrador
-                                Entidades.Usuario usuario = serviceUsuario.getById(id_usuario, ref resultado);
+                        SesionService sesionService = new SesionService();
 
-                                if(string.IsNullOrEmpty(resultado))
-                                { 
-                                    UsuarioWeb usuarioWeb = MapearUsuarioWeb(usuario);
-                                    return Json(usuarioWeb, JsonRequestBehavior.AllowGet);
+                        Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                        List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+
+                        if (roles.Count > 0)
+                        {
+                            foreach (var rol in roles)
+                            {
+                                if (rol.id_rol == 1)
+                                {
+                                    //Si tiene el rol 1 quiere decir que es administrador
+                                    Entidades.Usuario usuario = serviceUsuario.getById(id_usuario, ref resultado);
+
+                                    if (string.IsNullOrEmpty(resultado))
+                                    {
+                                        UsuarioWeb usuarioWeb = MapearUsuarioWeb(usuario);
+                                        return Json(usuarioWeb, JsonRequestBehavior.AllowGet);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                resultado = ex.Message;
+                catch (Exception ex)
+                {
+                    resultado = ex.Message;
+                }
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
@@ -270,37 +288,40 @@ namespace TestingManager.Areas.Usuario.Controllers
         public JsonResult getUsers()
         {
             string resultado = "";
-            try
+            if (Request.HttpMethod == "GET")
             {
-                string token = Request.Headers["X-AUTH-TOKEN"];
-
-                if (!string.IsNullOrEmpty(token))
+                try
                 {
-                    SesionService sesionService = new SesionService();
+                    string token = Request.Headers["X-AUTH-TOKEN"];
 
-                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
-
-                    List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
-
-                    if(roles.Count > 0)
+                    if (!string.IsNullOrEmpty(token))
                     {
-                        foreach (var rol in roles)
-                        {
-                            if(rol.id_rol == 1)
-                            {
-                                //Si tiene el rol 1 quiere decir que es administrador
-                                List<Entidades.Usuario> usuarios = serviceUsuario.getAll(ref resultado);
+                        SesionService sesionService = new SesionService();
 
-                                List<UsuarioWeb> usuariosWeb = MapearListUsuarioWeb(usuarios);                                    
-                                return Json(usuariosWeb, JsonRequestBehavior.AllowGet);
+                        Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                        List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+
+                        if (roles.Count > 0)
+                        {
+                            foreach (var rol in roles)
+                            {
+                                if (rol.id_rol == 1)
+                                {
+                                    //Si tiene el rol 1 quiere decir que es administrador
+                                    List<Entidades.Usuario> usuarios = serviceUsuario.getAll(ref resultado);
+
+                                    List<UsuarioWeb> usuariosWeb = MapearListUsuarioWeb(usuarios);
+                                    return Json(usuariosWeb, JsonRequestBehavior.AllowGet);
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                resultado = ex.Message;
+                catch (Exception ex)
+                {
+                    resultado = ex.Message;
+                }
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);

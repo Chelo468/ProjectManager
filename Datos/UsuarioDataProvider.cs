@@ -39,7 +39,7 @@ namespace Datos
 
             if(usuarioResult.Rows.Count > 0)
                 usuario = Mapear(usuarioResult.Rows[0]);
-
+            
             return usuario;
         }
 
@@ -102,8 +102,6 @@ namespace Datos
         {
             try
             {
-                int usuario = 0;
-
                 SqlParameter[] parametrosDelete = new SqlParameter[1];
 
                 parametrosDelete[0] = new SqlParameter("id_usuario", user.id_usuario);

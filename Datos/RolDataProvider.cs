@@ -10,6 +10,17 @@ namespace Datos
 {
     public class RolDataProvider : GenericDataProvider
     {
+
+        private static Rol Mapear(DataRow lector)
+        {
+            Rol rol = new Rol();
+
+            rol.id_rol = Convert.ToInt32(lector["id_rol"].ToString());
+            rol.nombre = lector["nombre"].ToString();
+
+            return rol;
+        }
+
         public static List<Rol> getByIdUsuario(int id_usuario)
         {
             List<Rol> roles = new List<Rol>();
@@ -31,14 +42,24 @@ namespace Datos
             return roles;
         }
 
-        private static Rol Mapear(DataRow lector)
+        
+
+        internal static Rol getById(int id_rol)
         {
             Rol rol = new Rol();
 
-            rol.id_rol = Convert.ToInt32(lector["id_rol"].ToString());
-            rol.nombre = lector["nombre"].ToString();
+            SqlParameter[] parametros = new SqlParameter[1];
+            parametros[0] = new SqlParameter("id_rol", id_rol);
 
-            return rol;
+            DataTable rolResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "rolesGetById", parametros);
+
+           if(rolResult.Rows.Count > 0)
+            {
+                rol = Mapear(rolResult.Rows[0]);
+            }
+
+
+           return rol;
         }
     }
 }

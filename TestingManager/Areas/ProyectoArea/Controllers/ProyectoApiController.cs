@@ -18,10 +18,12 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         // GET: /ProyectoArea/ProyectoApi/
 
         ProyectoService serviceProyecto;
+        RolService serviceRol;
 
         public ProyectoApiController()
         {
             serviceProyecto = new ProyectoService();
+            serviceRol = new RolService();
 
         }
 
@@ -35,30 +37,51 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         {
             string token = Request.Headers["X-AUTH-TOKEN"];
             string resultado = "";
-            if (token != null)
+            if (Request.HttpMethod == "GET")
             {
-                Sesion sesionActual = getSesionByToken(token);
-
-                if(sesionActual != null)
+                if (token != null)
                 {
-                    string error = "";
-                    Proyecto proyecto = serviceProyecto.getById(idProyecto, sesionActual.usuario_logueado.id_usuario, ref error);
+                    Sesion sesionActual = getSesionByToken(token);
 
-                    if(!string.IsNullOrEmpty(error))
+                    if (sesionActual != null)
                     {
-                        return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
-                    }
+                        string error = "";
+                        Proyecto proyecto = serviceProyecto.getById(idProyecto, ref error);
 
-                    return Json(proyecto, JsonRequestBehavior.AllowGet);                    
+                        if (proyecto.usuario_creador.id_usuario != sesionActual.usuario_logueado.id_usuario)
+                        {
+                            List<Rol> rolesUsuarioLogueado = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+                            bool esAdministrador = false;
+                            foreach (var rol in rolesUsuarioLogueado)
+                            {
+                                if(rol.id_rol == 1)
+                                {
+                                    esAdministrador = true;
+                                    break;
+                                }
+                            }
+                            if(!esAdministrador)
+                            {
+                                error = "Usted no tiene permiso sobre este proyecto.";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        return Json(proyecto, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        resultado = "No se encontró una sesión activa";
+                    }
                 }
                 else
                 {
-                    resultado = "No se encontró una sesión activa";
+                    resultado = "token no válido";
                 }
-            }
-            else
-            {
-                resultado = "token no válido";
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
@@ -67,87 +90,175 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         [AllowAnonymous]
         public JsonResult getByIdUser(string token)
         {
-            Sesion sesionActual = getSesionByToken(token);
-            if(token != null && sesionActual != null)
+            string resultado = "";
+            if (Request.HttpMethod == "GET")
             {
-                List<Proyecto> proyectos = serviceProyecto.getByIdUser(sesionActual.usuario_logueado.id_usuario);
-
-                if(proyectos.Count > 0)
+                Sesion sesionActual = getSesionByToken(token);
+                if (token != null && sesionActual != null)
                 {
-                    //return JsonConvert.SerializeObject(proyecto);
-                    return Json(proyectos, JsonRequestBehavior.AllowGet);
+                    List<Rol> rolesUsuario = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+
+                    bool esAdministrador = false;
+
+                    foreach (var rol in rolesUsuario)
+                    {
+                        if(rol.id_rol == 1)
+                        {
+                            esAdministrador = true;
+                            break;
+                        }
+                    }
+                    List<Proyecto> proyectos = new List<Proyecto>();
+                    if (esAdministrador)
+                        proyectos = serviceProyecto.getAll(ref resultado);
+                    else
+                        proyectos = serviceProyecto.getByIdUser(sesionActual.usuario_logueado.id_usuario);
+
+                    if (proyectos.Count > 0)
+                    {
+                        //return JsonConvert.SerializeObject(proyecto);
+                        return Json(proyectos, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { Mensaje = "no se encuentran proyectos" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
                 else
                 {
-                    return Json(new { Mensaje = "no se encuentran proyectos" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { Error = true, Mensaje = "token no válido" }, JsonRequestBehavior.AllowGet);
                 }
             }
             else
             {
-                return Json(new { Error = true, Mensaje = "token no válido" }, JsonRequestBehavior.AllowGet);
+                return Json(new { Error = true, Mensaje = "" }, JsonRequestBehavior.AllowGet);
             }
 
 
         }
 
         [AllowAnonymous]
-        public JsonResult crear()
+        public JsonResult getUsersById(int id_proyecto)
         {
-            try
+            string resultado = "";
+            if (Request.HttpMethod == "GET")
             {
                 string token = Request.Headers["X-AUTH-TOKEN"];
-                Sesion sesionActual = getSesionByToken(token);
-                if(sesionActual != null)
-                { 
-                    Request.InputStream.Seek(0, SeekOrigin.Begin);
-                    string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                    dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
 
-                    if(!string.IsNullOrEmpty(jsonData))
+                if (token != null)
+                {
+                    Sesion sesionActual = getSesionByToken(token);
+
+                    if (sesionActual != null)
                     {
+                        string error = "";
 
-                        ProyectoService serviceProyecto = new ProyectoService();
-
-                        string respuesta = "";
-
-                        Proyecto nuevoProyecto = new Proyecto();
-                        nuevoProyecto.nombre = objProyecto.nombre;
-                        nuevoProyecto.descripcion = objProyecto.descripcion;
-                        nuevoProyecto.urlTesting = objProyecto.urlTesting;
-                        nuevoProyecto.urlProduccion = objProyecto.urlProduccion;
-                        nuevoProyecto.usuario_creador.id_usuario = sesionActual.usuario_logueado.id_usuario;
-                        nuevoProyecto.fecha_alta = DateTime.Now;
-
-                        try
+                        List<Rol> rolesUsuarioLogueado = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+                        bool esAdministrador = false;
+                        foreach (var rol in rolesUsuarioLogueado)
                         {
-                            nuevoProyecto.id_proyecto = serviceProyecto.crear(nuevoProyecto, ref respuesta);
+                            if (rol.id_rol == 1)
+                            {
+                                esAdministrador = true;
+                                break;
+                            }
                         }
-                        catch (Exception)
+                        if (!esAdministrador)
                         {
-                            return Json(new { Error = true, Mensaje = "Ocurrió un error al crear el proyecto" }, JsonRequestBehavior.AllowGet);
+                            error = "Usted no tiene permiso para ver la información.";
                         }
-
-                        if (nuevoProyecto.id_proyecto == -1)
-                            return Json(new { Error = true, Mensaje = "No tiene permiso para crear proyectos." }, JsonRequestBehavior.AllowGet);
-                        else
-                            return Json(nuevoProyecto, JsonRequestBehavior.AllowGet);
                         
-                            
+
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
+                        }
+
+
+                        List<Proyecto_Usuario> usuarios = serviceProyecto.getUsersById(id_proyecto, ref error);
+
+                        return Json(usuarios, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        return Json(new {Error = true, Mensaje = "No existen datos."},JsonRequestBehavior.AllowGet);
+                        resultado = "No se encontró una sesión activa";
                     }
                 }
                 else
                 {
-                    return Json(new { Error = true, Mensaje = "token no válido." }, JsonRequestBehavior.AllowGet);
+                    resultado = "token no válido";
                 }
             }
-            catch (Exception ex)
+            
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+          
+        }
+
+        [AllowAnonymous]
+        public JsonResult crear()
+        {
+            if (Request.HttpMethod == "POST")
             {
-                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                return Json(new { Error = true, Mensaje = ex.Message }, JsonRequestBehavior.AllowGet);
+                try
+                {
+                    string token = Request.Headers["X-AUTH-TOKEN"];
+                    Sesion sesionActual = getSesionByToken(token);
+                    if (sesionActual != null)
+                    {
+                        Request.InputStream.Seek(0, SeekOrigin.Begin);
+                        string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                        dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                        if (!string.IsNullOrEmpty(jsonData))
+                        {
+
+                            ProyectoService serviceProyecto = new ProyectoService();
+
+                            string respuesta = "";
+
+                            Proyecto nuevoProyecto = new Proyecto();
+                            nuevoProyecto.nombre = objProyecto.nombre;
+                            nuevoProyecto.descripcion = objProyecto.descripcion;
+                            nuevoProyecto.urlTesting = objProyecto.urlTesting;
+                            nuevoProyecto.urlProduccion = objProyecto.urlProduccion;
+                            nuevoProyecto.usuario_creador.id_usuario = sesionActual.usuario_logueado.id_usuario;
+                            nuevoProyecto.fecha_alta = DateTime.Now;
+
+                            try
+                            {
+                                nuevoProyecto.id_proyecto = serviceProyecto.crear(nuevoProyecto, ref respuesta);
+                            }
+                            catch (Exception)
+                            {
+                                return Json(new { Error = true, Mensaje = "Ocurrió un error al crear el proyecto" }, JsonRequestBehavior.AllowGet);
+                            }
+
+                            if (nuevoProyecto.id_proyecto == -1)
+                                return Json(new { Error = true, Mensaje = "No tiene permiso para crear proyectos." }, JsonRequestBehavior.AllowGet);
+                            else
+                                return Json(nuevoProyecto, JsonRequestBehavior.AllowGet);
+
+
+                        }
+                        else
+                        {
+                            return Json(new { Error = true, Mensaje = "No existen datos." }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Error = true, Mensaje = "token no válido." }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    return Json(new { Error = true, Mensaje = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(new { Error = true, Mensaje = "" }, JsonRequestBehavior.AllowGet);
             }
            
         }
@@ -157,44 +268,66 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         {
             string token = Request.Headers["X-AUTH-TOKEN"];
             string resultado = "";
-            if (token != null)
+            if (Request.HttpMethod == "POST")
             {
-                Sesion sesionActual = getSesionByToken(token);
-
-                if (sesionActual != null)
+                if (token != null)
                 {
-                    string error = "";
-                    Proyecto proyecto = serviceProyecto.getById(idProyecto, sesionActual.usuario_logueado.id_usuario, ref error);
-                    if (!string.IsNullOrEmpty(error))
+                    Sesion sesionActual = getSesionByToken(token);
+
+                    if (sesionActual != null)
                     {
-                        return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
-                    }
+                        string error = "";
+                        Proyecto proyecto = serviceProyecto.getById(idProyecto, ref error);
 
-                    if(proyecto.id_proyecto > 0)
+                        if (proyecto.usuario_creador.id_usuario != sesionActual.usuario_logueado.id_usuario)
+                        {
+                            List<Rol> rolesUsuarioLogueado = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+                            bool esAdministrador = false;
+                            foreach (var rol in rolesUsuarioLogueado)
+                            {
+                                if (rol.id_rol == 1)
+                                {
+                                    esAdministrador = true;
+                                    break;
+                                }
+                            }
+                            if (!esAdministrador)
+                            {
+                                error = "Usted no tiene permiso sobre este proyecto.";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        if (proyecto.id_proyecto > 0)
+                        {
+                            Request.InputStream.Seek(0, SeekOrigin.Begin);
+                            string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                            dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                            proyecto.nombre = objProyecto.nombre;
+                            proyecto.descripcion = objProyecto.descripcion;
+                            proyecto.urlTesting = objProyecto.urlTesting;
+                            proyecto.urlProduccion = objProyecto.urlProduccion;
+                            proyecto.fecha_ultima_modif = DateTime.Now;
+
+                            serviceProyecto.actualizar(proyecto, ref resultado);
+                        }
+                        if (string.IsNullOrEmpty(resultado))
+                            return Json(proyecto, JsonRequestBehavior.AllowGet);
+                    }
+                    else
                     {
-                        Request.InputStream.Seek(0, SeekOrigin.Begin);
-                        string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                        dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
-
-                        proyecto.nombre = objProyecto.nombre;
-                        proyecto.descripcion = objProyecto.descripcion;
-                        proyecto.urlTesting = objProyecto.urlTesting;
-                        proyecto.urlProduccion = objProyecto.urlProduccion;
-                        proyecto.fecha_ultima_modif = DateTime.Now;
-
-                        serviceProyecto.actualizar(proyecto, ref resultado);
+                        resultado = "No se encontró una sesión activa";
                     }
-                    if(string.IsNullOrEmpty(resultado))
-                        return Json(proyecto, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    resultado = "No se encontró una sesión activa";
+                    resultado = "token no válido";
                 }
-            }
-            else
-            {
-                resultado = "token no válido";
             }
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
@@ -205,49 +338,75 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
         {
             string token = Request.Headers["X-AUTH-TOKEN"];
             string resultado = "";
-            if (token != null)
+            if (Request.HttpMethod == "POST")
             {
-                Sesion sesionActual = getSesionByToken(token);
-
-                if (sesionActual != null)
+                if (token != null)
                 {
-                    string error = "";
+                    Sesion sesionActual = getSesionByToken(token);
 
-                    Proyecto proyectoAux = new Proyecto();
-
-                    Request.InputStream.Seek(0, SeekOrigin.Begin);
-                    string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
-                    dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
-
-                    proyectoAux.id_proyecto = objProyecto.id_proyecto;
-
-                    Proyecto proyecto = serviceProyecto.getById(proyectoAux.id_proyecto, sesionActual.usuario_logueado.id_usuario, ref error);
-                    if (!string.IsNullOrEmpty(error))
+                    if (sesionActual != null)
                     {
-                        return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
-                    }
+                        string error = "";
 
-                    if (proyecto.id_proyecto > 0)
-                    {
-                        proyecto.fecha_baja = DateTime.Now;
+                        Proyecto proyectoAux = new Proyecto();
 
-                        serviceProyecto.eliminar(proyecto, ref resultado);
+                        Request.InputStream.Seek(0, SeekOrigin.Begin);
+                        string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                        dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
 
-                        return Json(proyecto, JsonRequestBehavior.AllowGet);
+                        proyectoAux.id_proyecto = objProyecto.id_proyecto;
+
+                        Proyecto proyecto = serviceProyecto.getById(proyectoAux.id_proyecto, ref error);
+
+                        if (proyecto.usuario_creador.id_usuario != sesionActual.usuario_logueado.id_usuario)
+                        {
+                            List<Rol> rolesUsuarioLogueado = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+                            bool esAdministrador = false;
+                            foreach (var rol in rolesUsuarioLogueado)
+                            {
+                                if (rol.id_rol == 1)
+                                {
+                                    esAdministrador = true;
+                                    break;
+                                }
+                            }
+                            if (!esAdministrador)
+                            {
+                                error = "Usted no tiene permiso sobre este proyecto.";
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            return Json(new { Error = true, Mensaje = error }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        if (proyecto.id_proyecto > 0)
+                        {
+                            proyecto.fecha_baja = DateTime.Now;
+
+                            serviceProyecto.eliminar(proyecto, ref resultado);
+
+                            return Json(proyecto, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return Json(new { Error = true, Mensaje = "El proyecto no existe o no tiene permiso a él." }, JsonRequestBehavior.AllowGet);
+                        }
                     }
                     else
                     {
-                        return Json(new { Error = true, Mensaje = "El proyecto no existe o no tiene permiso a él." }, JsonRequestBehavior.AllowGet);
+                        return Json(new { Error = true, Mensaje = "Token no válido." }, JsonRequestBehavior.AllowGet);
                     }
                 }
                 else
                 {
-                    return Json(new { Error = true, Mensaje = "Token no válido." }, JsonRequestBehavior.AllowGet);
+                    return Json(new { Error = true, Mensaje = "Token ausente." }, JsonRequestBehavior.AllowGet);
                 }
             }
             else
             {
-                return Json(new { Error = true, Mensaje = "Token ausente." }, JsonRequestBehavior.AllowGet);
+                return Json(new { Error = true, Mensaje = "" }, JsonRequestBehavior.AllowGet);
             }
         }
 

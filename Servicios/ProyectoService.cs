@@ -1,5 +1,6 @@
 ﻿using Datos;
 using Entidades;
+using Entidades.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +32,11 @@ namespace Servicios
             
         }
 
-        public Proyecto getById(int idProyecto, int idUsuario, ref string error)
+        public Proyecto getById(int idProyecto, ref string error)
         {
             try
             {
-                return ProyectoDataProvider.getById(idProyecto, idUsuario);
+                return ProyectoDataProvider.getById(idProyecto);
             }
             catch (Exception ex)
             {
@@ -65,6 +66,32 @@ namespace Servicios
             catch (Exception ex)
             {
                 resultado = ex.Message;
+            }
+        }
+
+        public List<Proyecto> getAll(ref string resultado)
+        {
+            try
+            {
+                return ProyectoDataProvider.getAll();
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+                return new List<Proyecto>();
+            }
+        }
+
+        public List<Proyecto_Usuario> getUsersById(int id_proyecto, ref string error)
+        {
+            try
+            {
+                return Proyecto_UsuarioDataProvider.getUsersByIdProyecto(id_proyecto);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return new List<Proyecto_Usuario>();
             }
         }
     }

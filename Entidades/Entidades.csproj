@@ -46,6 +46,7 @@
     <Compile Include="Entidades\EstadoDefecto.cs" />
     <Compile Include="Entidades\EstadoPublicacion.cs" />
     <Compile Include="Entidades\Proyecto.cs" />
+    <Compile Include="Entidades\Proyecto_Usuario.cs" />
     <Compile Include="Entidades\Publicacion.cs" />
     <Compile Include="Entidades\Rol.cs" />
     <Compile Include="Entidades\Sesion.cs" />

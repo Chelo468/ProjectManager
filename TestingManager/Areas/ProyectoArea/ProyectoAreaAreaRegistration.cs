@@ -25,6 +25,12 @@ namespace TestingManager.Areas.ProyectoArea
                 "api/proyecto/getByIdUser/{token}",
                 new { controller = "ProyectoApi", action = "getByIdUser", token = UrlParameter.Optional }
                 );
+            
+            context.MapRoute(
+                "ProyectoApiGetUsersById",
+                "api/proyecto/getUsersById/{id_proyecto}",
+                new { controller = "ProyectoApi", action = "getUsersById", id_proyecto = UrlParameter.Optional }
+                );
 
             context.MapRoute(
                 "ProyectoApiCrear",

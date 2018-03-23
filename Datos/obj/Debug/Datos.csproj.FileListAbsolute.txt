@@ -19,3 +19,10 @@ C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\Debug\Datos.dll
 C:\Users\Chelo\Desktop\Proyectos\ProjectManager\WebApi\ProjectManager\Datos\obj\Debug\Datos.pdb
 D:\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.csprojResolveAssemblyReference.cache
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Datos.dll
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Datos.pdb
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Entidades.dll
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\bin\Debug\Entidades.pdb
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.csprojResolveAssemblyReference.cache
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.dll
+D:\CompartidaMarce\Chelo\Proyectos\TestingManager\Datos\obj\Debug\Datos.pdb
