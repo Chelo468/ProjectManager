@@ -56,6 +56,18 @@ namespace TestingManager.Areas.ProyectoArea
                 new { controller = "ProyectoApi", action = "getById", idProyecto = UrlParameter.Optional }
                 );
 
+            context.MapRoute(
+               "ProyectoApiAgregarUsuario",
+               "api/proyecto/agregarUsuario",
+               new { controller = "ProyectoApi", action = "agregarUsuario" }
+               );
+
+            context.MapRoute(
+              "ProyectoApiEliminarUsuario",
+              "api/proyecto/eliminarUsuario",
+              new { controller = "ProyectoApi", action = "eliminarUsuario" }
+              );
+
            
         }
     }

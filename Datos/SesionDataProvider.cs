@@ -82,7 +82,10 @@ namespace Datos
                 DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "sesionesGetByToken", parametros);
 
                 if (usuarioResult.Rows.Count > 0)
+                { 
                     sesion = Mapear(usuarioResult.Rows[0]);
+                    sesion.usuario_logueado = UsuarioDataProvider.getById(sesion.usuario_logueado.id_usuario);
+                }
 
                 return sesion;
             }

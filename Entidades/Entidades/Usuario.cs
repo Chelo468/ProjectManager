@@ -8,6 +8,11 @@ namespace Entidades
 {
     public class Usuario
     {
+        public Usuario()
+        {
+            roles = new List<Rol>();
+        }
+
         public int id_usuario { get; set; }
         public string login_name { get; set; }
         public string password { get; set; }

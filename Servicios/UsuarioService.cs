@@ -28,7 +28,7 @@ namespace Servicios
             
         }
 
-        public Usuario getByUserNamePassword(string login_name, string password)
+        public Usuario getByUserNamePassword(string login_name, string password, ref string resultado)
         {
             try
             {
@@ -45,11 +45,12 @@ namespace Servicios
             catch (Exception ex)
             {
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                resultado = ex.Message;
                 return null;
             }
         }
 
-        public int crear(Usuario nuevoUsuario, ref string respuesta)
+        public int crear(Usuario nuevoUsuario, ref string resultado)
         {
             try
             {
@@ -58,6 +59,7 @@ namespace Servicios
             catch (Exception ex)
             {
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                resultado = ex.Message;
                 return 0;                
             }
         }
@@ -72,6 +74,7 @@ namespace Servicios
             {
                 
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                resultado = ex.Message;
                 return new List<Usuario>();  
             }
         }
@@ -85,6 +88,21 @@ namespace Servicios
             catch (Exception ex)
             {
                 LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                resultado = ex.Message;
+            }
+        }
+
+        public List<Usuario> getByFilters(string usuario, int id_rol, ref string resultado)
+        {
+            try
+            {
+                return UsuarioDataProvider.getByFilters(usuario, id_rol);
+            }
+            catch (Exception ex)
+            {
+
+                LogueadorService.loguear(ex.Message, GetType().Namespace, GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return new List<Usuario>();
             }
         }
     }

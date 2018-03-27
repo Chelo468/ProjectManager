@@ -66,5 +66,30 @@ namespace TestingManager.Controllers
 
             return token.ToString();
         }
+
+        public int validarToken(HttpRequestBase request,ref Sesion sesionActual, ref string resultado)
+        {
+            string token = request.Headers["X-AUTH-TOKEN"];
+
+            if (token != null)
+            {
+                sesionActual = getSesionByToken(token);
+
+                if (sesionActual != null && sesionActual.usuario_logueado.id_usuario > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    resultado = "Token no válido";
+                    return -1;
+                }
+            }
+            else
+            {
+                resultado = "Token ausente";
+                return 0;
+            }
+        }
     }
 }

@@ -410,5 +410,115 @@ namespace TestingManager.Areas.ProyectoArea.Controllers
             }
         }
 
+        public JsonResult agregarUsuario()
+        {
+            string resultado = "";
+            if(Request.HttpMethod == "POST")
+            {
+                Sesion sesionActual = new Sesion();
+                int tokenValido = validarToken(Request,ref sesionActual, ref resultado);
+
+                if(tokenValido > 0)
+                {
+                    if (esUsuarioAdministrador(sesionActual.usuario_logueado, ref resultado))
+                    {
+                        Request.InputStream.Seek(0, SeekOrigin.Begin);
+                        string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                        dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                        int id_proyecto = objProyecto.id_proyecto;
+                        int id_usuario = objProyecto.id_usuario;
+                        int id_rol = objProyecto.id_rol;
+
+                        List<Proyecto_Usuario> usuarios = serviceProyecto.getUsersById(id_proyecto, ref resultado);
+
+                        if (usuarios.Count > 0)
+                        {
+                            foreach (var usuario in usuarios)
+                            {
+                                if(usuario.usuario.id_usuario == id_usuario && usuario.rol.id_rol == id_rol)
+                                {
+                                    return Json(new { Error = true, Mensaje = "EL usuario ya pertenece a este proyecto con el rol seleccionado"},JsonRequestBehavior.AllowGet);
+                                }
+                            }
+                            //El proyecto existe
+                            serviceProyecto.agregarUsuario(id_proyecto, id_usuario, id_rol, ref resultado);
+                            if(string.IsNullOrEmpty(resultado))
+                                return Json(new { Error = false, Mensaje = "El usuario se agregó con éxito." }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
+                }
+               
+            }
+
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult eliminarUsuario()
+        {
+            string resultado = "";
+            if (Request.HttpMethod == "POST")
+            {
+                Sesion sesionActual = new Sesion();
+                int tokenValido = validarToken(Request, ref sesionActual, ref resultado);
+
+                if (tokenValido > 0)
+                {
+                    if (esUsuarioAdministrador(sesionActual.usuario_logueado, ref resultado))
+                    {
+                        Request.InputStream.Seek(0, SeekOrigin.Begin);
+                        string jsonData = new StreamReader(Request.InputStream).ReadToEnd();
+                        dynamic objProyecto = JsonConvert.DeserializeObject(jsonData, typeof(object));
+
+                        int id_proyecto = objProyecto.id_proyecto;
+                        int id_usuario = objProyecto.id_usuario;
+                        int id_rol = objProyecto.id_rol;
+
+                        List<Proyecto_Usuario> usuarios = serviceProyecto.getUsersById(id_proyecto, ref resultado);
+
+                        if (usuarios.Count > 0)
+                        {
+                            bool perteneceAlProyecto = false;
+                            foreach (var usuario in usuarios)
+                            {
+                                if (usuario.usuario.id_usuario == id_usuario && usuario.rol.id_rol == id_rol)
+                                {
+                                    perteneceAlProyecto = true;
+                                    serviceProyecto.eliminarUsuario(id_proyecto, id_usuario, id_rol, ref resultado);
+                                    
+                                }
+                            }
+                            //El proyecto existe
+                            if(!perteneceAlProyecto)
+                            {
+                                return Json(new { Error = true, Mensaje = "EL usuario no pertenece a este proyecto con el rol seleccionado" }, JsonRequestBehavior.AllowGet);
+                            }
+                            if (string.IsNullOrEmpty(resultado))
+                                return Json(new { Error = false, Mensaje = "El usuario se eliminó con éxito." }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
+                }
+
+            }
+
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
+        }
+
+        private bool esUsuarioAdministrador(Entidades.Usuario usuario, ref string resultado)
+        {
+            foreach (var rol in usuario.roles)
+            {
+                if(rol.id_rol == 1)
+                {
+                    return true;
+                }
+            }
+
+            resultado = "Usted no tiene permisos de administrador";
+            return false;
+        }
+
     }
 }

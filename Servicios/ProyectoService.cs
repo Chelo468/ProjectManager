@@ -94,5 +94,29 @@ namespace Servicios
                 return new List<Proyecto_Usuario>();
             }
         }
+
+        public void agregarUsuario(int id_proyecto, int id_usuario, int id_rol, ref string resultado)
+        {
+            try
+            {
+                Proyecto_UsuarioDataProvider.agregarUsuarioAProyecto(id_proyecto, id_usuario, id_rol);
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+        }
+
+        public void eliminarUsuario(int id_proyecto, int id_usuario, int id_rol, ref string resultado)
+        {
+            try
+            {
+                Proyecto_UsuarioDataProvider.eliminarUsuarioAProyecto(id_proyecto, id_usuario, id_rol);
+            }
+            catch (Exception ex)
+            {
+                resultado = ex.Message;
+            }
+        }
     }
 }

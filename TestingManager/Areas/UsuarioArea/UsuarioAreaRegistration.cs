@@ -24,12 +24,12 @@ namespace TestingManager.Areas.Usuario
                 "UsuarioApiGetUsers",
                 "api/usuario/getUsers",
                 new { controller = "UsuarioApi", action = "getUsers" }
-                ); 
-            
+                );
+
             context.MapRoute(
-                "UsuarioApiUpdateRoles",
-                "api/usuario/updateRoles",
-                new { controller = "UsuarioApi", action = "updateRoles" }
+                "UsuarioApiGetByFilters",
+                "api/usuario/getByFilters/{usuario}/{id_rol}",
+                new { controller = "UsuarioApi", action = "getByFilters", usuario = UrlParameter.Optional, id_rol = UrlParameter.Optional }
                 );
 
             context.MapRoute(
@@ -54,6 +54,12 @@ namespace TestingManager.Areas.Usuario
                 "UsuarioApiLogOut",
                 "api/usuario/logout/",
                 new { controller = "UsuarioApi", action = "logout" }
+                );
+
+            context.MapRoute(
+                "UsuarioApiUpdateRoles",
+                "api/usuario/updateRoles",
+                new { controller = "UsuarioApi", action = "updateRoles" }
                 );
         }
     }

@@ -91,7 +91,7 @@ namespace TestingManager.Areas.Usuario.Controllers
             if (Request.HttpMethod == "GET")
             {
                 //LogueadorService.loguear("Parametros:" + login_name + "," + password, "Testingmanager.Areas.Usuario.Controllers", "UsuarioApiController", "login");
-                Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password);
+                Entidades.Usuario user = serviceUsuario.getByUserNamePassword(login_name, password, ref resultado);
 
                 if (user != null)
                 {
@@ -299,22 +299,30 @@ namespace TestingManager.Areas.Usuario.Controllers
                         SesionService sesionService = new SesionService();
 
                         Sesion sesionActual = sesionService.getByToken(token, ref resultado);
-
-                        List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
-
-                        if (roles.Count > 0)
+                        if (sesionActual != null)
                         {
-                            foreach (var rol in roles)
-                            {
-                                if (rol.id_rol == 1)
-                                {
-                                    //Si tiene el rol 1 quiere decir que es administrador
-                                    List<Entidades.Usuario> usuarios = serviceUsuario.getAll(ref resultado);
+                            List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
 
-                                    List<UsuarioWeb> usuariosWeb = MapearListUsuarioWeb(usuarios);
-                                    return Json(usuariosWeb, JsonRequestBehavior.AllowGet);
+                            if (roles.Count > 0)
+                            {
+                                foreach (var rol in roles)
+                                {
+                                    if (rol.id_rol == 1)
+                                    {
+                                        //Si tiene el rol 1 quiere decir que es administrador
+                                        List<Entidades.Usuario> usuarios = serviceUsuario.getAll(ref resultado);
+
+                                        List<UsuarioWeb> usuariosWeb = MapearListUsuarioWeb(usuarios);
+                                        return Json(usuariosWeb, JsonRequestBehavior.AllowGet);
+                                    }
                                 }
+
+                                resultado = "Usted no tiene permisos de administrador.";
                             }
+                        }
+                        else
+                        {
+                            resultado = "Token no válido";
                         }
                     }
                 }
@@ -326,6 +334,55 @@ namespace TestingManager.Areas.Usuario.Controllers
 
             return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
 
+        }
+
+        public JsonResult getByFilters(string usuario, int id_rol)
+        {
+            string resultado = "";
+
+            try
+            {
+                string token = Request.Headers["X-AUTH-TOKEN"];
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    SesionService sesionService = new SesionService();
+
+                    Sesion sesionActual = sesionService.getByToken(token, ref resultado);
+
+                    if(sesionActual.token != null)
+                    {
+                        List<Rol> roles = serviceRol.getByIdUser(sesionActual.usuario_logueado.id_usuario, ref resultado);
+
+                        if (roles.Count > 0)
+                        {
+                            foreach (var rol in roles)
+                            {
+                                if (rol.id_rol == 1)
+                                {
+                                    //Si tiene el rol 1 quiere decir que es administrador
+                                    List<Entidades.Usuario> usuarios = serviceUsuario.getByFilters(usuario, id_rol,ref resultado);
+
+                                    List<UsuarioWeb> usuariosWeb = MapearListUsuarioWeb(usuarios);
+                                    return Json(usuariosWeb, JsonRequestBehavior.AllowGet);
+                                }
+                            }
+
+                            resultado = "Usted no tiene permisos de administrador.";
+                        }
+                    }
+                    else
+                    {
+                        resultado = "Token no válido.";
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                resultado = ex.Message;
+            }
+
+            return Json(new { Error = true, Mensaje = resultado }, JsonRequestBehavior.AllowGet);
         }
 
         private List<UsuarioWeb> MapearListUsuarioWeb(List<Entidades.Usuario> usuarios)

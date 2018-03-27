@@ -11,23 +11,35 @@ namespace Datos
 {
     public class UsuarioDataProvider : GenericDataProvider
     {
-        public static List<Usuario> getAll()
+        private static Usuario Mapear(DataRow lector)
         {
-            List<Usuario> usuarios = new List<Usuario>();
-            
-            DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetAll", null);
+            Usuario usuario = new Usuario();
 
-            for (int i = 0; i < usuarioResult.Rows.Count; i++)
+            usuario.id_usuario = lector["id_usuario"] != null ? Convert.ToInt32(lector["id_usuario"].ToString()) : 0;
+            usuario.login_name = lector["login_name"] != null ? lector["login_name"].ToString() : "";
+            usuario.password = lector["password"] != null ? lector["password"].ToString() : "";
+            usuario.token_clave = lector["token_clave"] != null ? lector["token_clave"].ToString() : "";
+            usuario.fecha_alta = lector["fecha_alta"] != null ? Convert.ToDateTime(lector["fecha_alta"].ToString()) : new DateTime();
+            usuario.email = lector["email"] != null ? lector["email"].ToString() : "";
+            usuario.habilitado = lector["habilitado"] != null ? Convert.ToBoolean(lector["habilitado"].ToString()) : false;
+            usuario.nombre = lector["nombre"].ToString();
+            usuario.apellido = lector["apellido"].ToString();
+            usuario.telefono = lector["telefono"].ToString();
+
+            Rol rol = new Rol();
+            try
             {
-                Usuario user = new Usuario();
-                user = Mapear(usuarioResult.Rows[i]);
-
-                usuarios.Add(user);
+                rol.id_rol = Convert.ToInt32(lector["id_rol"].ToString());
+                rol.nombre = lector["nombre_rol"].ToString();
+                usuario.roles.Add(rol);
             }
+            catch (Exception){}
 
-            return usuarios;
+            return usuario;
+
         }
 
+       
         public static Usuario getById(int id)
         {
             Usuario usuario = new Usuario();
@@ -38,7 +50,10 @@ namespace Datos
             DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetById", parametros);
 
             if(usuarioResult.Rows.Count > 0)
+            { 
                 usuario = Mapear(usuarioResult.Rows[0]);
+                usuario.roles = RolDataProvider.getByIdUsuario(usuario.id_usuario);
+            }
             
             return usuario;
         }
@@ -66,6 +81,61 @@ namespace Datos
                 throw ex;
             }
             
+        }
+
+        public static List<Usuario> getAll()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetAll", null);
+
+            for (int i = 0; i < usuarioResult.Rows.Count; i++)
+            {
+                Usuario user = new Usuario();
+                user = Mapear(usuarioResult.Rows[i]);
+
+                usuarios.Add(user);
+            }
+
+            return usuarios;
+        }
+
+
+        public static List<Usuario> getByFilters(string usuario, int id_rol)
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            SqlParameter[] parametros = new SqlParameter[2];
+            parametros[0] = new SqlParameter("login_name", usuario);
+            parametros[1] = new SqlParameter("id_rol", id_rol);
+
+            DataTable usuarioResult = executeQueryProc(ConfiguracionDataProvider.obtenerCadenaConexion(), "usuariosGetByFilters", parametros);
+
+            for (int i = 0; i < usuarioResult.Rows.Count; i++)
+            {
+                Usuario user = new Usuario();
+                user = Mapear(usuarioResult.Rows[i]);
+                user.roles = RolDataProvider.getByIdUsuario(user.id_usuario);
+                //if (usuarios.Count > 0)
+                //{
+                //    var usuarioAgregado = usuarios.Where(x => x.id_usuario == user.id_usuario).FirstOrDefault();
+
+                //    if (usuarioAgregado != null)
+                //    {
+                //        usuarioAgregado.roles.AddRange(user.roles);
+                //    }
+                //    else
+                //    {
+                //        usuarios.Add(user);
+                //    }
+                //}
+                //else
+                //{
+                    usuarios.Add(user);
+                //}
+            }
+
+            return usuarios;
         }
 
         public static int crear(Usuario nuevoUsuario)
@@ -125,25 +195,9 @@ namespace Datos
             }
         }
 
-        private static Usuario Mapear(DataRow lector)
-        {
-            Usuario usuario = new Usuario();
+       
 
-            usuario.id_usuario = lector["id_usuario"] != null ? Convert.ToInt32(lector["id_usuario"].ToString()) : 0;
-            usuario.login_name = lector["login_name"] != null ? lector["login_name"].ToString() : "";
-            usuario.password = lector["password"] != null ? lector["password"].ToString() : "";
-            usuario.token_clave = lector["token_clave"] != null ? lector["token_clave"].ToString() : "";
-            usuario.fecha_alta = lector["fecha_alta"] != null ? Convert.ToDateTime(lector["fecha_alta"].ToString()) : new DateTime();
-            usuario.email = lector["email"] != null ? lector["email"].ToString() : "";
-            usuario.habilitado = lector["habilitado"] != null ? Convert.ToBoolean(lector["habilitado"].ToString()) : false;
-            usuario.nombre = lector["nombre"].ToString();
-            usuario.apellido = lector["apellido"].ToString();
-            usuario.telefono = lector["telefono"].ToString();
 
-            return usuario;
-            
-        }
 
-        
     }
 }
